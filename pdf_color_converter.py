@@ -38,10 +38,14 @@ def convert_pdf_to_color(input_pdf_path, color_rgb):
             for y in range(pix.height):
                 for x in range(pix.width):
                     gray_val = pix.pixel(x, y)[0]
-                    # Simple tinting: multiply the gray value with the color components
-                    new_r = int(gray_val / 255 * r)
-                    new_g = int(gray_val / 255 * g)
-                    new_b = int(gray_val / 255 * b)
+                    # v is the gray value normalized to a float between 0.0 (black) and 1.0 (white)
+                    v = gray_val / 255.0
+
+                    # Interpolate between the selected color (for black) and white (for white)
+                    new_r = int(v * 255 + (1 - v) * r)
+                    new_g = int(v * 255 + (1 - v) * g)
+                    new_b = int(v * 255 + (1 - v) * b)
+
                     color_pix.set_pixel(x, y, (new_r, new_g, new_b))
 
             # Create a new page and insert the tinted pixmap
